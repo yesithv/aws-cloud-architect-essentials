@@ -1,3 +1,4 @@
+# Image from:
 FROM public.ecr.aws/docker/library/eclipse-temurin:21-jre-alpine
 
 WORKDIR /usr/share/app

@@ -6,31 +6,28 @@ import com.vinsguru.dto.GenreUpdateRequest;
 import com.vinsguru.exceptions.CustomerNotFoundException;
 import com.vinsguru.mapper.EntityDtoMapper;
 import com.vinsguru.repository.CustomerRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class CustomerService {
 
     private final MovieClient movieClient;
-    private final CustomerRepository repository;
-
-    public CustomerService(MovieClient movieClient, CustomerRepository repository) {
-        this.movieClient = movieClient;
-        this.repository = repository;
-    }
+    private final CustomerRepository customerRepository;
 
     public CustomerDto getCustomer(Integer id) {
-        var customer = this.repository.findById(id)
-                                      .orElseThrow(() -> new CustomerNotFoundException(id));
-        var movies = this.movieClient.getMovies(customer.getFavoriteGenre());
-        return EntityDtoMapper.toDto(customer, movies);
+        var customer = this.customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
+        var recommendedMovies = this.movieClient.getMovies(customer.getFavoriteGenre());
+        return EntityDtoMapper.toDto(customer, recommendedMovies);
     }
 
     public void updateCustomerGenre(Integer id, GenreUpdateRequest request) {
-        var customer = this.repository.findById(id)
-                                      .orElseThrow(() -> new CustomerNotFoundException(id));
+        var customer = this.customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
         customer.setFavoriteGenre(request.favoriteGenre());
-        this.repository.save(customer);
+        this.customerRepository.save(customer);
     }
 
 }

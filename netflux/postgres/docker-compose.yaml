@@ -1,5 +1,5 @@
 services:
-  postgres:
+  netflux_postgres:
     image: postgres
     container_name: postgres
     environment:
